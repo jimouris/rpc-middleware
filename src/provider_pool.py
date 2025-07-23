@@ -1,5 +1,6 @@
 """Provider pool logic for loading and selecting Ethereum RPC providers."""
 import csv
+import logging
 import random
 from typing import List
 
@@ -29,12 +30,16 @@ class ProviderPool:
         with open(csv_path, newline='', encoding='utf-8') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
-                name = row['name']
-                url = row['url']
-                weight = int(row.get('weight', 1))
+                enabled = row['Enabled'].lower() == 'true'
+                if not enabled:
+                    continue
+                name = row['Name']
+                url = row['URL']
+                weight = int(row.get('Weight', 1))
                 provider = Provider(name, url, weight)
                 self.providers.append(provider)
                 self.weights.append(weight)
+            logging.info("Loaded %d providers: %s", len(self.providers), self.get_provider_names())
 
     def get_random_provider(self) -> Provider:
         """Return a randomly selected provider, weighted by their assigned weights."""
@@ -43,3 +48,7 @@ class ProviderPool:
     def get_all_providers(self) -> List[Provider]:
         """Return a list of all loaded providers."""
         return self.providers
+
+    def get_provider_names(self) -> List[str]:
+        """Return a list of all provider names."""
+        return [provider.name for provider in self.providers]

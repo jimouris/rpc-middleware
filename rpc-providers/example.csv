@@ -1,3 +1,4 @@
-name,url,weight
-Alchemy,https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY,1
-QuikNode,https://chaotic-cold-sun.quiknode.pro/YOUR_KEY/,1
+Enabled,Name,URL,Weight
+True,Alchemy,https://eth-mainnet.g.alchemy.com/v2/YOUR_KEY,1
+False,QuickNode,https://chaotic-cold-sun.quiknode.pro/YOUR_KEY/,1
+True,Infura,https://mainnet.infura.io/v3/YOUR_KEY,1

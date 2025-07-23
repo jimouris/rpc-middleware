@@ -1,12 +1,20 @@
 """FastAPI middleware for rotating Ethereum JSON-RPC requests among multiple providers."""
 import logging
-
 import httpx
+
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 
 from src.metrics import Metrics
 from src.provider_pool import ProviderPool
+
+GREEN = "\033[32m"
+RESET = "\033[0m"
+logging.basicConfig(
+    level=logging.INFO,
+    format=f"{GREEN}INFO{RESET}:     %(message)s"
+)
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
 app = FastAPI()
 
@@ -14,7 +22,6 @@ app = FastAPI()
 provider_pool = ProviderPool('rpc-providers/rpcs.csv')
 metrics = Metrics()
 
-logging.basicConfig(level=logging.INFO)
 
 @app.post("/rpc")
 async def rpc_proxy(request: Request):
@@ -23,6 +30,7 @@ async def rpc_proxy(request: Request):
         body = await request.body()
         provider = provider_pool.get_random_provider()
         metrics.increment(provider.name)
+        logging.info("Forwarding request to provider: %s", provider.name)
         async with httpx.AsyncClient(timeout=15) as client:
             resp = await client.post(
                 provider.url,
