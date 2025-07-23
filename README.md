@@ -42,6 +42,10 @@ returns
 {"jsonrpc":"2.0","id":1,"result":"0x15eb54a"}
 ```
 
+<p align="left">
+  <img src="images/example.png" alt="Example" width="700"/>
+</p>
+
 Go to `http://127.0.0.1:8000/metrics` to see how many times each RPC has been
 used!
 
